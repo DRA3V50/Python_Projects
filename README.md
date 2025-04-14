@@ -18,3 +18,6 @@ Contains mini-games//Security: ***Some projects need certain PIP installation, w
 
 
 <Monitering.Network.Pentest.Firewall_Config.py> ||- Requires nothing else beside it than PIP installations.
+
+
+<Castle_Hero.py> ||- Requires nothing else beside it than PIP installations.
