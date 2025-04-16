@@ -21,3 +21,6 @@ Contains mini-games//Security: ***Some projects need certain PIP installation, w
 
 
 <Castle_Hero.py> ||- Requires nothing else beside it than PIP installations.
+
+
+<Password_Crack.py> ||- Requires nothing else beside it.
