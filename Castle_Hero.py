@@ -223,7 +223,7 @@ def path_choice(name, health, inventory):
                                                  if direction_option2 == "1":
                                                      print(colored(f"Narrator: You slept near the river. The sound of water calms you.", "blue"))
                                                  elif direction_option2 == "2":
-                                                         print(colored(f"Narrator: The cave was very chilly as you went in, a moose gotten scared and shoved you to the floor while it ran out. You still yesdecided to rest in it.", "blue"))
+                                                         print(colored(f"Narrator: The cave was very chilly as you went in, a moose gotten scared and shoved you to the floor while it ran out. You still decided to rest in it.", "blue"))
                                                          health -= random.randint(12, 18)
                                                          print(colored(f"Narrator: Your new HP is at: ❤️  {health} HP.","blue"))
                                                  else:
