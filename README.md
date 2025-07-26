@@ -1,26 +1,40 @@
-# Python_Projects
-Contains mini-games//Security: ***Some projects need certain PIP installation, while others need a specified imagery I have included along.
+# Python Projects
 
+This folder contains several mini-games and security-related Python scripts.
 
-<BOT_Optional_Choosing.py> ||- Requires nothing else beside it.
+---
 
+## Project Overview
 
-<Mini_Game_Guess_Number.py> ||- Requires the COOKIE.png along with it and PIP installations
+- **BOT_Optional_Choosing.py**  
+  Requires no additional files or installations.
 
+- **Mini_Game_Guess_Number.py**  
+  Requires the `COOKIE.png` image and some PIP package installations.
 
-<Would_You_Rather_Game.py> ||- Requires nothing else beside it than PIP installations.
+- **Would_You_Rather_Game.py**  
+  Requires PIP package installations only.
 
+- **Hangman_Game.py**  
+  Requires PIP package installations only.
 
-<Hangman_Game.py> ||- Requires nothing else beside it than PIP installations.
+- **Bank_Account.py**  
+  Requires PIP package installations only.
 
+- **Monitering.Network.Pentest.Firewall_Config.py**  
+  Requires PIP package installations only.
 
-<Bank_Account.py> ||- Requires nothing else beside it than PIP installations.
+- **Castle_Hero.py**  
+  Requires PIP package installations only.
 
+- **Password_Crack.py**  
+  Requires no additional files or installations.
 
-<Monitering.Network.Pentest.Firewall_Config.py> ||- Requires nothing else beside it than PIP installations.
+---
 
+## Setup and Usage
 
-<Castle_Hero.py> ||- Requires nothing else beside it than PIP installations.
+Some projects require certain Python packages to be installed via pip. To install required packages, you can use:
 
-
-<Password_Crack.py> ||- Requires nothing else beside it.
+```bash
+pip install -r requirements.txt
