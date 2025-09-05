@@ -1,7 +1,6 @@
 # Python Projects
 
-This folder contains several mini-games and security-related Python scripts.
-
+Python scripts and mini-projects focused on cybersecurity tasks, automation, and security testing.
 ---
 
 ## Project Overview
