@@ -30,7 +30,7 @@ A collection of Python scripts and mini-projects focused on cybersecurity tasks,
 - **Password_Crack.py**  
   Requires no additional files or installations.
 
-- **SOC Log Triage**  
+- **SOC_Log_Triage.py**  
   A Python tool to analyze SSH and firewall logs, detect suspicious IP activity, and categorize IPs into Blocked, Escalate, or Double-check groups based on configurable thresholds.  
   Requires you to create a `SOC.log` file in the same folder as the script.  
   (Optional) For colored output, install Colorama via pip.
