@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 ---
 
-### For **SOC Log Triage**
+### For **SOC_Log_Triage**
 
 - Create a log file named `SOC.log` in the same directory as the script.  
 - Populate it with SSH and firewall logs (sample entries provided in the project).  
