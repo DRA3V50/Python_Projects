@@ -35,6 +35,8 @@ A collection of Python scripts and mini-projects focused on cybersecurity tasks,
   Requires you to create a `SOC.log` file in the same folder as the script.  
   (Optional) For colored output, install Colorama via pip.
 
+- **SOC_Threat_Filter.py**
+  A real-time SOC threat simulation dashboard built using Python’s Turtle graphics. It visualizes simulated security logs, displays live severity counts, and shows color-coded alerts for different threat levels. Perfect for SOC visualization, cybersecurity demonstrations, or training simulations. Requires no additional files or external packages.
 ---
 
 ## Setup and Usage
@@ -45,14 +47,11 @@ pip install -r requirements.txt
 
 ---
 
-### For **SOC_Log_Triage**
+### For **SOC_Log_Triage.py**
 
 - Create a log file named `SOC.log` in the same directory as the script.  
-- Populate it with SSH and firewall logs (sample entries provided in the project).  
-- Run the script:
+- Populate it with SSH and firewall logs (sample entries provided in the project).
 
-python SOC_Log_Triage.py
+### For **SOC_Threat_Filter.py**
 
-
-
-
+- Locate the script in your project directory + run it.
