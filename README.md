@@ -53,5 +53,5 @@ pip install -r requirements.txt
 - Populate it with SSH and firewall logs (sample entries provided in the project).
 
 ### For **SOC_Threat_Filter.py**
-
-- Locate the script in your project directory + run it.
+- Just copy and paste it to test it out + run it.
+- You can edit it the script in your project directory + run it.
