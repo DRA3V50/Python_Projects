@@ -37,6 +37,9 @@ A collection of Python scripts and mini-projects focused on cybersecurity tasks,
 
 - **SOC_Threat_Filter.py**
   A real-time SOC threat simulation dashboard built using Python’s Turtle graphics. It visualizes simulated security logs, displays live severity counts, and shows color-coded alerts for different threat levels. Perfect for SOC visualization, cybersecurity demonstrations, or training simulations. Requires no additional files or external packages.
+
+- **Data_Analytics_&_Automation.py**
+  This Python script acts like a mini SOC analyst. It creates event data, finds unusual activity, and uses color to show severity levels LOW, MEDIUM, HIGH, and CRITICAL. The script prints a simple report so you can quickly see patterns and anomalies.
 ---
 
 ## Setup and Usage
