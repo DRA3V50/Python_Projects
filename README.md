@@ -48,7 +48,7 @@ A collection of Python scripts and mini-projects focused on cybersecurity tasks,
   This Python script acts like a mini SOC analyst. It creates event data, finds unusual activity, and uses color to show severity levels LOW, MEDIUM, HIGH, and CRITICAL. The script prints a simple report so you can quickly see patterns and anomalies.
 
 - **Access_Audit_Management_System.py**
-   This script uses a Resident Evil theme to simulate access log management, including viewing, editing, and deleting records. It emphasizes data auditing, record tracking, and analytical practices, demonstrating skills relevant to entry-level data analyst and blue team roles.
+   This script uses a Resident Evil theme to simulate access log management, including viewing, editing, and deleting records. It emphasizes data auditing, record tracking, and analytical practices, demonstrating skills relevant to entry-level data analyst and blue team roles. Requires PIP installations of packages termcolor, tabulate, and colorama.
 ---
 
 ## Setup and Usage
