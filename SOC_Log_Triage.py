@@ -1,5 +1,3 @@
-#By: Dany Arabo
-
 # SOC Triage Dashboard GUI
 import turtle               # GUI library
 import random               # Random IP simulation
@@ -136,4 +134,3 @@ while True:
     draw_sidebar(block_list, escalate_list, observed_list)    # Draw sidebar
     screen.update()                                         # Refresh screen
     time.sleep(1)                                          # Wait 1 second
-    print(Fore.CYAN + "\n=== Analysis Complete ===")              # Completion confirmation
