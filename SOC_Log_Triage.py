@@ -1,114 +1,139 @@
 #By: Dany Arabo
 
-import re                                          # For pattern matching IPs
-from collections import defaultdict                # For counting IP activities
-from datetime import datetime, timezone            # For current time in UTC
-import json                                        # For saving Jira ticketing details
-import os                                          # For direct file operations
-import random, string                              # For generating random ticket IDs for Jira
+# SOC Triage Dashboard GUI
+import turtle               # GUI library
+import random               # Random IP simulation
+import string               # Ticket ID generation
+import time                 # Loop timing
+from collections import defaultdict  # Count IP events
+from datetime import datetime       # Timestamp logs
 
-# -------------------------------------------------------------------------
-try:
-    from colorama import init, Fore                # For colored terminal output
-    init(autoreset=True)                           # Auto-reset colors after each print
-except ImportError:                                # Will use dummy colors if colorama is not installed
-    class Dummy:                                   # Fallback dummy class
-        RED = GREEN = YELLOW = Blue = ''           # No color codes
-    Fore = Dummy()                                 # Assign dummy class to Fore
-# ------------------------------------------------------------------------- 
-log_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)), "SOC.log")
-Block_Threshold = 3                                # Threshold for blocking an IP triggers
-Escalation_Threshold = 2                           # Threshold for escalating to Jira tickets
-Double_Check_Threshold = 1                         # Threshold for double-checking before blocking or escalating
-# ------------------------------------------------------------------------
-SSH_Fail = re.compile(r"Failed password for .* from (\d+\.\d+\.\d+\.\d+)")                # To match attempted SSH logins (ssh = Secure Shell)
-Firewall_Block = re.compile(r"\b(Denied|Drop|Reject|Block)\b.*?(\d+\.\d+\.\d+\.\d+)")     # To match firewall IP blocks
-# ------------------------------------------------------------------------
-ip_events = defaultdict(int)                       # Dictionary to count events per IP
-#------------------------------------------------------------------------
-def parse_log(file_path):                          # Log analysis parser
-    try:
-        with open(file_path) as f:                 # Open log file
-            lines = f.readlines()                  # Read all lines
-            print(Fore.LIGHTGREEN_EX + f"\nLoaded {len(lines)} log lines from '{file_path}'\n") # File size
-            for line in lines:                     # Process the log lines
-                ssh = SSH_Fail.search(line)        # Align with SSH attempts
-                fw = Firewall_Block.search(line)   # Align with firewall blocks
-                if ssh:
-                    ip_events[ssh.group(1)] += 1   # Count number of SSH fails
-                elif fw and fw.group(2):           # Unless no IP found
-                    ip_events[fw.group(2)] += 1    # Count number of firewall blocks
-    except FileNotFoundError:                      # Handle missing log file
-        print(Fore.RED +f"Log file not found: {file_path}") # Error message for missing file
-#------------------------------------------------------------------------
-def save_list(filename, ips):                      # Save list of IPs to a file
-    with open(filename, "w") as f:                 # Open the file for writing
-        for ip in ips:                             # For each IP in list
-            f.write(ip + "\n")                     # Write up the IP to the file
-#------------------------------------------------------------------------
+# ---------------- Config ----------------
+Block_Threshold = 3            # High severity threshold
+Escalation_Threshold = 2       # Medium severity threshold
+Double_Check_Threshold = 1     # Low severity threshold
+
+# ---------------- Data ----------------
+ip_events = defaultdict(int)   # Track IP occurrences
+tickets_created = {}           # Store ticket IDs
+log_entries = []               # Keep last 15 logs
+
+# ---------------- Turtle Setup ----------------
+screen = turtle.Screen()       # Main window
+screen.title("SOC Triage Dashboard")  # Window title
+screen.bgcolor("black")        # Background color
+screen.setup(width=1000, height=600) # Window size
+screen.tracer(0)               # Disable auto-refresh
+
+# Create turtles
+title_t = turtle.Turtle(visible=False)   # Title turtle
+table_t = turtle.Turtle(visible=False)   # Table turtle
+sidebar_t = turtle.Turtle(visible=False) # Sidebar turtle
+
+for t in [title_t, table_t, sidebar_t]:
+    t.penup()               # No drawing when moving
+    t.hideturtle()          # Hide cursor
+    t.color("white")        # Default text color
+
+# ---------------- Helper Functions ----------------
+def draw_title():
+    title_t.clear()                         # Clear old title
+    title_t.goto(0, 260)                    # Move near top
+    title_t.color("white")                   # White color
+    title_t.write("SOC Triage Dashboard", align="center", font=("Arial", 24, "bold")) # Title
+
 def Random_Jira_Ticket_ID(prefix="Jira"):
-    a = '' .join(random.choices(string.ascii_uppercase, k=3))                                # Three random uppercase letters
-    b = '' .join(random.choices(string.ascii_uppercase + string.digits, k=4 or 3 or 2 or 1)) # Random list of 4,3,2 or 1 uppercase letters or digits
-    return f"{prefix}-{a}-{b}"                                                               # Return full ticket ID
-#------------------------------------------------------------------------
-def create_Jira_Ticket(issue_type, ip, count, project="SOC_Log"): # Create a Jira ticket
-    os.makedirs("jira_tickets", exist_ok=True)                    # Ensure directory exists, if not, make output directory
-    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")    # Timestamp in UTC format (UTC = Coordinated Universal Time)
-    ticket_key = Random_Jira_Ticket_ID()                          # Generate a random ticket ID
-    ticket = {
-        "Key": ticket_key,                                       # Unique ticket ID
-        "project":project,                                       # Project name
-        "issue_type": issue_type,                                # Issue type (Blocked or Escalated)
-        "summary": f"{issue_type} - suspicious IP {ip}",         # Summary line
-        "description": f"Auto-generated {issue_type} ticket for IP {ip}. Dectected {count} suspicious events.", # Description of the issue 
-        "priority": "High" if issue_type.lower() == "Blocked" else "Medium", # Priority based on issue type
-        "created_at": ts                                         # Timestamp of ticket creation
-    }   
-    fname = f"jira_tickets/{ticket_key}_{ip.replace('.','_')}.json"  # Filename for saving ticket details
-    with open(fname, "w", encoding="utf-8") as fh:                   # Open file for writing
-        json.dump(ticket, fh, indent=2)                              # Save ticket details in JSON format
-        print(f"{Fore.YELLOW} Created ticket {ticket_key} for {ip}") # Notify user of ticket creation
-#------------------------------------------------------------------------
-def analyze():
-    block_list = [(ip, c) for ip, c in ip_events.items() if c >= Block_Threshold] # IPs for blocking
-    escalate = [(ip, c) for ip, c in ip_events.items() if Escalation_Threshold <= c < Block_Threshold] # IPs for escalation if not blocked
-    double_check = [(ip, c) for ip, c in ip_events.items() if Double_Check_Threshold <= c < Escalation_Threshold] # IPs for double-checking if not escalated
+    a = ''.join(random.choices(string.ascii_uppercase, k=3)) # Random letters
+    b = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4)) # Random chars
+    return f"{prefix}-{a}-{b}"            # Return ticket ID
 
-    save_list("blocklist.txt", [ip for ip, _ in block_list])       # Add the blicklist to a file
-    save_list("escalate.txt", [ip for ip, _ in escalate])          # Add escalate list to a file
-    save_list("double_check.txt", [ip for ip, _ in double_check])  # Add double-check list to a file
-#------------------------------------------------------------------------
-    if block_list:                                                 # Do we have IPs to block?
-     print(Fore.RED + "Blocked IPs (Malicious):")                  # IP block header
-     print("-" * 30)                                               # console separator
-     for ip, count in block_list:                                  # For each blocked IP
-         print(f"{Fore.RED}{ip:<15} Events: {count}")              # display blocked IPs
-         create_Jira_Ticket("Blocked", ip, count)                  # Create a Jira ticket for each blocked IP
+def create_ticket(ip):
+    if ip not in tickets_created:          # Only create new ticket
+        tickets_created[ip] = Random_Jira_Ticket_ID()
+    return tickets_created[ip]             # Return ticket ID
+
+def categorize_ips():
+    block_list = [(ip, c) for ip, c in ip_events.items() if c >= Block_Threshold]       # High severity
+    escalate_list = [(ip, c) for ip, c in ip_events.items() if Escalation_Threshold <= c < Block_Threshold] # Medium
+    observed_list = [(ip, c) for ip, c in ip_events.items() if Double_Check_Threshold <= c < Escalation_Threshold] # Low severity
+    return block_list, escalate_list, observed_list  # Return lists
+
+def draw_table(block_list, escalate_list, observed_list):
+    table_t.clear()                       # Clear previous table
+    table_t.goto(-480, 220)               # Table header position
+    table_t.color("white")                
+    table_t.write(f"{'Time':<10} {'IP':<18} {'Severity':<12} {'Ticket ID':<12}", font=("Courier", 14, "bold")) # Header
+
+    global log_entries
+    log_entries = []                       # Reset log entries
+
+    for ip, _ in block_list:
+        log_entries.append((ip, "BLOCKED", "red"))          # Red for blocked
+    for ip, _ in escalate_list:
+        log_entries.append((ip, "ESCALATED", "orange"))     # Orange for escalated
+    for ip, _ in observed_list:
+        log_entries.append((ip, "OBSERVED", "light blue"))  # Light blue for low severity
+
+    # Show only last 15 logs
+    display_logs = log_entries[-15:]
+    y = 190                                # Start y-position
+    for ip, severity, color in display_logs:
+        ticket = create_ticket(ip)          # Get ticket ID
+        table_t.goto(-480, y)               # Move to row
+        table_t.color(color)                 # Set color
+        table_t.write(f"{datetime.now().strftime('%H:%M:%S'):<10} {ip:<18} {severity:<12} {ticket:<12}", font=("Courier", 12))
+        y -= 25                              # Move down one row
+
+def draw_sidebar(block_list, escalate_list, observed_list):
+    sidebar_t.clear()                     # Clear old sidebar
+    x = 250                               # Right side
+    start_y = -50                          # Bottom-center position
+    spacing = 30
+
+    # Header
+    sidebar_t.goto(x, start_y + spacing*4)
+    sidebar_t.color("white")
+    sidebar_t.write("Counts & Summary:", font=("Arial", 14, "bold"))
+
+    # Blocked
+    sidebar_t.goto(x, start_y + spacing*3)
+    sidebar_t.color("red")
+    sidebar_t.write(f"Blocked: {len(block_list)}", font=("Arial", 12))
+
+    # Escalated
+    sidebar_t.goto(x, start_y + spacing*2)
+    sidebar_t.color("orange")
+    sidebar_t.write(f"Escalated: {len(escalate_list)}", font=("Arial", 12))
+
+    # Observed
+    sidebar_t.goto(x, start_y + spacing*1)
+    sidebar_t.color("light blue")
+    sidebar_t.write(f"Observed: {len(observed_list)}", font=("Arial", 12))
+
+    # Total
+    sidebar_t.goto(x, start_y)
+    sidebar_t.color("white")
+    total = len(block_list) + len(escalate_list) + len(observed_list)
+    sidebar_t.write(f"Total IPs: {total}", font=("Arial", 12))
+
+def simulate_log():
+    ip = f"192.168.{random.randint(0,255)}.{random.randint(1,254)}" # Random IP
+    choice = random.choices(["BLOCKED", "ESCALATED", "OBSERVED"], [2,3,5])[0] # Random severity
+    if choice == "BLOCKED":
+        ip_events[ip] += random.randint(Block_Threshold, Block_Threshold+1) # Increment high
+    elif choice == "ESCALATED":
+        ip_events[ip] += random.randint(Escalation_Threshold, Escalation_Threshold+1) # Increment medium
     else:
-        print(Fore.GREEN + "\n--- Blocked IPs (Malicious): None ---")      # No blocked IPs
-        print()
-#------------------------------------------------------------------------
-    if escalate:                                                   # Escalate if we have IPs for escalation
-        print(Fore.MAGENTA + "IPs for escalation: ")               # IP escalation header  
-        print("-" * 30)                                            # Dash separator
-        for ip, count in escalate:                                 # Output each escalated IP
-            print(f"{Fore.MAGENTA}{ip:<15} Events: {count}")       # Display escalated IPs
-            create_Jira_Ticket("Escalated", ip, count)             # Create a Jira ticket for each escalated IP
-    else:
-        print(Fore.GREEN + "\n--- IPs for escalation: None ---")           # No IPs for escalation
-        print()
-#------------------------------------------------------------------------
-    if double_check:
-        print(Fore.BLUE + "IPs to double-check: ")                # IPs to double-check
-        print("-" * 30)                                           # Dash separator
-        for ip, count in double_check:                            # Display each IP to double-check
-            print(f"{Fore.BLUE}{ip:<15} Events: {count}")         # List of IPs to double-check
-    else:
-        print(Fore.GREEN + "\n--- IPs to double-check: None ---")         # No IPs to double-check
-        print()
-#------------------------------------------------------------------------
-if __name__ == "__main__":                                        # Begin main program
-    print(Fore.LIGHTYELLOW_EX + "Starting SOC Log Analyzer...\n") # Startup confirmation
-    parse_log(log_file_name)                                           # Parse the log file
-    analyze()                                                     # Analyze the parsed data
+        ip_events[ip] += 1     # Increment low
+
+# ---------------- Main Loop ----------------
+draw_title()                      # Draw dashboard title
+
+while True:
+    simulate_log()                              # Simulate new log
+    block_list, escalate_list, observed_list = categorize_ips() # Categorize IPs
+    draw_table(block_list, escalate_list, observed_list)       # Draw table
+    draw_sidebar(block_list, escalate_list, observed_list)    # Draw sidebar
+    screen.update()                                         # Refresh screen
+    time.sleep(1)                                          # Wait 1 second
     print(Fore.CYAN + "\n=== Analysis Complete ===")              # Completion confirmation
