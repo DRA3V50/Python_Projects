@@ -50,6 +50,20 @@ A collection of Python scripts and mini-projects focused on cybersecurity tasks,
 - **Access_Audit_Management_System.py**
 This script uses a Resident Evil theme to simulate access log management with audit logging for all actions (login, edits, deletions) and requires installing Python packages via `pip install termcolor tabulate colorama`.
 
+- **Log_Parse_Analysis.py**
+A Python Tkinter GUI for log parsing and analysis. It reads CSV logs, displays them in a dark-themed table, 
+and color-codes events by severity: green for normal, gold for abnormal, and red for critical. 
+Includes a summary panel for total, critical, and abnormal events. 
+Best for log review or blue team training simulations.
+## Setup Instructions:
+1) Place your log CSV in the 'data/' folder **relative to where this script is located**. 
+   Example: If your script is in 'Python_Scripts_Practice!', then the CSV should be at 'Python_Scripts_Practice!/data/simulated_logs.csv'.
+   (I created 'simulated_logs.csv' with randomized dates, names, IPs, and events; you can use your own CSV or mine I've attached, then place it inside a folder named 'data' and run script.)
+2) Install required packages:
+   pip install pandas
+   pip install tk
+   (datetime is included in Python, no install required)
+
 ---
 
 ## Setup and Usage
