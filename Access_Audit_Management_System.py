@@ -49,7 +49,7 @@ while True:
             logged_in_user[4] = input(colored(f"Password [{logged_in_user[4]}]: ", "yellow")) or logged_in_user[4]               # Change password
             print(colored("Information record confirmed and updated successfully.", "light_red"))                                # Log update confirmation
             action = "Edited User Info"                                                                                          # If action is edited
-            print(colored(f"[AUDIT] {logged_in_user[0]} performed {action} at {datetime.now()}", "light_blue"))                   # Audit log entry
+            print(colored(f"[AUDIT] {logged_in_user[0]} performed {action} at {datetime.now()}", "light_blue"))                  # Audit log entry
             with open("audit_log.txt", "a") as f:                                                                                # Audit log file
                 f.write(f"{datetime.now()} - {logged_in_user[0]} performed {action}\n")                                          # Keep track of user actions
         elif Choice == "2":                                                                                                      # Option to delete user
@@ -89,3 +89,4 @@ while True:
     if User_Credentials_Log != 'yes':                                                                                            # If no, exit loop
         print(colored("Thank you!", "light_red"))                                                                                # Exit message
         break
+
