@@ -1,6 +1,6 @@
 # Python Projects
 
-A collection of Python scripts and mini-projects focused on cybersecurity tasks, automation, and security testing.
+A collection of Python scripts and mini-projects focused on cybersecurity tasks, automation, security testing for practice playbooks.
 
 -----
 ## Warning
