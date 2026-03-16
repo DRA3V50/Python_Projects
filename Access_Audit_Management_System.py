@@ -89,4 +89,3 @@ while True:
     if User_Credentials_Log != 'yes':                                                                                            # If no, exit loop
         print(colored("Thank you!", "light_red"))                                                                                # Exit message
         break
-
