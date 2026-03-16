@@ -9,7 +9,7 @@ A collection of Python scripts and mini-projects focused on cybersecurity tasks,
 
 **They should not be used on real systems, live networks, or data unless you have clear permission to do so. Any scripts related to monitoring, password handling, or security testing are intended to help build understanding, not to cause harm.**
 
-*Please use these projects responsibly and ethically as part of your learning and skill development.* 
+*⚠️ Please use these projects responsibly and ethically as part of your learning and skill development.* 
 -----
 ## Project Overview
 
