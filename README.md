@@ -67,6 +67,13 @@ pip install -r requirements.txt
 
 ---
 
+### For PyJection_Payload.py
+
+- Run `python PyJection_Payload.py server` to start the vulnerable Flask app on `http://127.0.0.1:5000`.
+- In a second terminal, run `python PyJection_Payload.py attack` to execute the exploit demo against it.
+- (Optional) Open `http://127.0.0.1:5000` in a browser to try the payloads manually — the page includes example injection strings.
+- For an extra challenge, rewrite the vulnerable queries using parameterized placeholders (`?`) and re-run the attack to confirm it now fails
+
 ### For **SOC_Log_Triage.py**
 
 - Create a log file named `SOC.log` in the same directory as the script.  
